@@ -1,0 +1,101 @@
+
+$min_width: 300px;
+$tablet_minWidth: 600px;
+$desktop_minWidth: 1000px;
+$large_minWidth: 1200px;
+$verylarge_minWidth: 1600px;
+
+$mobile_layout: (
+  header_paddings: 0.2rem 1rem,
+  header_distance: 5rem,
+  content_paddings: 2rem 1rem,
+);
+$tablet_layout: (
+  header_paddings: 0.2rem 1rem,
+  header_distance: 5rem,
+  content_paddings: 2rem 2rem
+);
+$desktop_layout: (
+  header_paddings: 0.5rem 3rem,
+  header_distance: 7rem,
+  content_paddings: 2rem 10rem
+);
+$large_layout: (
+  header_paddings: 0.5rem 6rem,
+  header_distance: 7rem,
+  content_paddings: 2rem 20vw
+);
+$verylarge_layout: (
+  header_paddings: 0.5rem 6rem,
+  header_distance: 7rem,
+  content_paddings: 2rem 25vw
+);
+
+@mixin media_support($property, $value) {
+    #{$property}: map-get($mobile_layout, $value);
+    
+    @media only screen and (min-width: $tablet_minWidth) {
+      #{$property}: map-get($tablet_layout, $value);
+    }
+    @media only screen and (min-width: $desktop_minWidth) {
+      #{$property}: map-get($desktop_layout, $value);
+    }
+    @media only screen and (min-width: $large_minWidth) {
+      #{$property}: map-get($large_layout, $value);
+    }
+    @media only screen and (min-width: $verylarge_minWidth) {
+      #{$property}: map-get($verylarge_layout, $value);
+    }
+}
+
+body {
+    margin: 0;
+    padding: 0;
+
+    min-width: $min_width;
+    font-size: 16px;
+
+    font-family: sans-serif;
+    overflow-x: hidden;
+}
+
+header {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+
+    z-index: 100;
+
+    .layout-container {
+        @include media_support(padding, header_paddings);
+    }
+
+    h1 {
+        margin: 0;
+    }
+    
+}
+
+main {
+    
+    min-height: 80vh;
+    
+    @include media_support(margin-top, header_distance);
+
+    @media only print {
+      margin-top: 0;
+    }
+
+    .layout-container {
+        @include media_support(padding, content_paddings);
+    }
+}
+  
+footer {
+    min-height: 20vh;
+
+    .layout-container {
+      @include media_support(padding, content_paddings);
+    }
+}

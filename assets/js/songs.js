@@ -1,7 +1,8 @@
 var songs = (function() {
     var c = {},
         f_create_song,
-        f_create_rhythm;
+        f_create_rhythm,
+        f_create_preview;
 
     f_create_rhythm = function(rhytmNotation) {
         const BEAT_SEPARATOR = ' ',
@@ -247,9 +248,48 @@ var songs = (function() {
         parentElement.appendChild(songElement);
     };
 
+    f_create_preview = function(songScript) {
+        const expressions = {
+            no_linebreak: /^\n/,
+            simple_sequence: /\w\s/
+        };
+
+        const parseSong = function(songScript) {
+            /*
+             * High-level-Song-Structructure:
+             *  - one line
+             *    -> Simple Sequence
+             *  - multiple lines
+             *    -> Simple Sequence
+             *    -> Detailed Sequence
+             *  - JSON
+             *    -> TBC
+             */
+            const structure = [];
+            if (songScript.includes("\n")) {
+                structure.push(songScript.split("\n"))
+            }
+            else {
+                // Simple sequence.
+                structure.push(songScript.split(/\s/));
+            }
+
+            return structure;
+        };
+
+        var songElement = document.createElement('div');
+        songElement.classList.add('song');
+
+        songElement.innerHTML = songScript;
+
+        console.log(parseSong(songScript));
+        return songElement;
+    };
+
     return {
         createRhythm: f_create_rhythm,
-        createSong: f_create_song
+        createSong: f_create_song,
+        createPreview: f_create_preview
     };
 
 })();
@@ -309,240 +349,54 @@ var night_nurse = {
     }
 };
 
-var my_number = {
-    "id": "my-number",
-    "parentId": "my-number-container",
-    "title": "54-46 Was My Number",
-    "infos": ["Toots & The Maytals - 54-46 Was My Number", "https://www.youtube.com/watch?v=wNxNwvjzGM0"],
-    "parts": [
-        {
-            "id": "basic-form",
-            "name": "Grundform",
-            "repeat": true,
-            "barsPerLine": 8,
-            "bars": ["G", "C", "G", "C","G", "C", "G", "C"]
-        },
-        {
-            "id": "hits",
-            "name": "Hits",
-            "barsPerLine": 5,
-            "bars": [
-                {"chords": "(Auftakt)", "lyrics": "Give it to me", "type": "empty"},
-                {"chords": "G", "lyrics": "One time!"},
-                {"chords": ['C'], "lyrics": "Give it to me"},
-                {"lyrics": "Two times!"},
-                {"chords": ['C', 'C', '', ''], "lyrics": "Give it to me"},
-                "",
-                {"lyrics": "Three times!"},
-                {"chords": ['C', 'C', 'C', ''], "lyrics": "Give it to me"},
-                {"lyrics": "Four times!"},
-                {"chords": ['C', 'C', 'C', 'C']}
-            ]
-        }
-    ],
-    "structure": {
-        "parts": [
-            {
-                "id": "intro",
-                "bars": ["Intro", "Yeah"]
-            },
-            {
-                "id": "round1",
-                "bars": ["Str (kurz)", "Str", "Str", "Hits", "54-46", "54-46"]
-            },
-            {
-                "id": "round2",
-                "bars": ["Yeah", "Skat", "Skat", "Hits* (D)", "Skat", "Skat (lang)"]
-            },
-            {
-                "id": "outro",
-                "bars": ["54-46", "Outro"]
-            }
-        ],
-        "break": true
-    } 
-};
-
-var rat_race = {
-    "id": "rat-race",
-    "parentId": "rat-race-container",
-    "title": "Rat Race",
-    "infos": ["Bob Marley & The Wailers - Rat Race", "https://www.youtube.com/watch?v=5Qe23LVs2O4"],
-    "parts": [
-        {
-            "id": "basic-form",
-            "name": "Grundform",
-            "repeat": true,
-            "barsPerLine": 8,
-            "bars": ["Bb", "Bb", "Bb", "Bb","Cm", "Cm", "Cm", "Cm"]
-        },
-        {
-            "id": "basic-form",
-            "name": "Intro",
-            // "barsPerLine": 5,
-            "bars": [
-                "",
-                {"chords": ["x", "x", "x", "x"], "type": "empty"},
-                {"chords": ["c", "b", "g", "#d"], "startRepeat": true},
-                { "chords": ["-", "", "Uh!", "", "-", "", "g", "b"]},
-                { "chords": ["c", "c", "c", "", "-", "", "b", ""]},
-                { "chords": ["c", "to", "rude!", "-"], "stopRepeat": true},
-                { "chords": ["Oh what a rat"]},
-                { "chords": ["Race"]}
-            ]
-        }
-    ],
-    "structure": {
-        "parts" : [
-            {
-                "id": "intro",
-                "bars": ["Intro (+1)"]
-            },
-            {
-                "id": "round1",
-                "bars": ["Ref", "Ref", "Str A", "Str A"]
-            },
-            {
-                "id": "round2",
-                "bars": ["Str B", "Str B", "Ref"]
-            },
-            {
-                "id": "round3",
-                "bars": ["Str B", "Str B", "Ref"]
-            },
-            {
-                "id": "outro",
-                "bars": ["Str C", "Outro"]
-            }
-        ]
+var test_songs = [
+    {
+        "title": "one_line_simple",
+        "script": "Intro Ref Str1 Ref Str2 Ref Solo Ref Ref Ende",
+    },
+    {
+        "title": "multi_line_simple",
+        "script": "Intro Ref\nStr1 Ref Str2 Ref\nSolo Ref Ref Ende",
     }
-};
+];
 
-var devil = {
-    "id": "devil",
-    "parentId": "devil-container",
-    "title": "Chase the Devil",
-    "infos": ["I Chase The Devil - Max Romeo, The Upsetters, Lee Scratch Perry", "https://www.youtube.com/watch?v=PqyDn9dXj5k"],
-    "parts": [
-        {
-            "id": "basic-form",
-            "name": "Grundform",
-            "repeat": true,
-            "barsPerLine": 8,
-            "bars": ["Am", "Em", "Dm", "Am"]
-        },
-        {
-            "id": "b-part",
-            "name": "B-Teil",
-            "repeat": true,
-            "barsPerLine": 8,
-            "bars": ["Dm", "Em", "Dm", "Em"]
-        }
-    ],
-    "structure": {
-        "parts" : [
-            {
-                "id": "intro",
-                "bars": ["Intro"]
-            },
-            {
-                "id": "melody1",
-                "bars": ["Melodie (8)"]
-            },
-            {
-                "id": "round1",
-                "bars": ["Ref (Shirt)", "Ref (Shirt)", "Ref (Space)", "Ref (Space)"]
-            },
-            {
-                "id": "B-Teil",
-                "info": "kein offbeat",
-                "bars": ["B-Teil", "B-Teil"]
-            },
-            {
-                "id": "round2",
-                "bars": ["Ref (Shirt)", "Ref (Shirt)", "Ref (Space)", "Ref (Space)"]
-            },
-            {
-                "id": "melody2",
-                "bars": ["Melodie (8)"]
-            },
-            {
-                "id": "B-Teil 2",
-                "bars": ["B-Teil", "B-Teil"]
-            },
-            {
-                "id": "round3",
-                "bars": ["Ref (Shirt)", "Ref (Shirt)", "Ref (Space)", "Ref (Space)"]
-            },
-            {
-                "id": "B-Teil 3",
-                "bars": ["B-Teil", "B-Teil"]
-            },
-            {
-                "id": "round4",
-                "bars": ["Ref (Shirt)", "Ref (Shirt)", "Ref (Space)", "Ref (Space)"]
-            },
-            {
-                "id": "dubgroove",
-                "bars": ["Dub Groove (2)", "Dub Low (2)", "Dub Rap"]
-            },
-            {
-                "id": "B-Teil 4",
-                "bars": ["B-Teil", "B-Teil"]
-            },
-            {
-                "id": "round5",
-                "bars": ["Ref (Shirt)", "Ref (Shirt)"]
-            },
-            {
-                "id": "dubgroove2",
-                "bars": ["Melodie Rap (8)", "Dub Rap (8)"]
-            },
-            {
-                "id": "round6",
-                "bars": ["Ref (Space)", "Ref (Space)"]
-            },
-            {
-                "id": "B-Teil 5",
-                "bars": ["B-Teil", "B-Teil"]
-            },
-            {
-                "id": "round7",
-                "bars": ["Ref (Shirt)", "Ref (Shirt)"]
-            },
-            {
-                "id": "dubgroove3",
-                "bars": ["Melodie Rap (4)"]
-            },
-            {
-                "id": "round8",
-                "bars": ["Ref (Space)", "Ref (Space)"]
-            },
-            {
-                "id": "dubgroove4",
-                "bars": ["Melodie Rap (8)"]
-            }
-        ]
-    }
-};
-
+// Handler when the DOM is fully loaded.
 var initPage = function() {
+    const songInputElement = document.getElementById("song-script");
 
-    // Handler when the DOM is fully loaded
-    console.log('initPage.');
+    var removeElements = function(parentElement) {
+        while (parentElement.firstChild) {
+            parentElement.removeChild(parentElement.lastChild);
+        }
+    };
+    var reloadSongPreview = function() {
+        var inputText = songInputElement.value;
 
-    // document.querySelector("#btn-contact-send").addEventListener('click', happypac.send);
+        var preview = songs.createPreview(inputText);
 
-    
-    document.getElementById("rhythm-container").appendChild(songs.createRhythm("x - x x-xx"));
+        var previewParent = document.getElementById("song-preview-output");
+        removeElements(previewParent);
+        previewParent.appendChild(preview);
+    };
 
-    songs.createSong(night_nurse);
+    /* Page Header */
+    const pageHeader = document.getElementById("cnt-page-header");
+    const navLoadSong = function(songScript) {
+        songInputElement.value = songScript;
+    };
+    const createNavItem = function(item) {
+        var navButton = document.createElement("button");
+        navButton.textContent = item.title;
+        navButton.addEventListener("click", () => navLoadSong(item.script));
 
-    
-    songs.createSong(my_number);
+        pageHeader.appendChild(navButton);
+    };
+    test_songs.forEach(createNavItem);
 
-    songs.createSong(rat_race);
-    songs.createSong(devil);
+    document.getElementById("btn-reload-song-preview").addEventListener('click', reloadSongPreview);
+
+    // document.getElementById("rhythm-container").appendChild(songs.createRhythm("x - x x-xx"));
+    // songs.createSong(night_nurse);
 };
 
 if (document.readyState === "complete" ||

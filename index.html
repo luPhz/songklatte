@@ -11,22 +11,22 @@
 <body>
 
     <header>
-      <div class="layout-container">
-        <h1>Songs</h1>
-        <button id="btn-night-nurse">Night Nurse</button>
-        <button id="btn-my-number">54-46</button>
-        <button id="btn-rat-race">Rat Race</button>
-        <button id="btn-devil">Chase the Devil</button>
+      <div id="cnt-page-header" class="layout-container">
+        Input und Preview
       </div>
     </header>
 
     <main>
-      <div id="rhythm-container" class="layout-container"></div>
+      <div id="cnt-song-preview" class="layout-container">
+        <h1>Preview</h1>
+        <button id="btn-reload-song-preview">Preview aktualisieren</button>
+        <div id="song-preview-output"></div>
+      </div>
 
-      <div id="night-nurse-container" class="layout-container"></div>
-      <div id="my-number-container" class="layout-container"></div>
-      <div id="rat-race-container" class="layout-container"></div>
-      <div id="devil-container" class="layout-container"></div>
+      <div id="song-input" class="layout-container">
+        <h1>Input</h1>
+        <textarea id="song-script">Intro Ref Str1 Ref Str2 Ref Solo Ref Ref Ende</textarea>
+      </div>
     </main>
 
   <script src="assets/js/songs.js"></script>

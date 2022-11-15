@@ -1,6 +1,87 @@
+/*
+ * The App.
+ * 
+ * A self-initializing collection of general utilities and features.
+ * 
+ * - Feature: Initializer-Callbacks
+ */
+var app = (function() {
+    const appContext = {};
+    appContext.readyActions = [];
+    appContext.isInitialized = false;
+    
+    appContext.navigation = (function() {
+        var navContainer = null;
+        
+        const navItems = [];
+        const createNavItemElements = function(title, action) {
+            let navButton = document.createElement("button");
+            navButton.textContent = title;
+            navButton.addEventListener("click", action);
+            
+            return navButton;
+        };
+        
+        return {
+            init: () => {
+                navContainer = document.createElement("nav");
+
+                navItems.forEach(item => {
+                    navContainer.appendChild(createNavItemElements(item.title, item.action));
+                });
+                
+                return navContainer;
+            },
+            addItem: (title, action) => {
+                navItems.push({title: title, action: action});
+                if (navContainer) {
+                    navContainer.appendChild(createNavItemElements(title, action));
+                }
+            }
+        };
+    })();
+    
+    const initApp = function() {
+        
+        /* Page Header */
+        const pageHeader = document.getElementById("cnt-page-header");
+        pageHeader.appendChild(appContext.navigation.init());
+
+        appContext.isInitialized = true;
+        appContext.readyActions.forEach(action => action());
+    };
+
+    if (document.readyState === "complete" ||
+        (document.readyState !== "loading" && !document.documentElement.doScroll))
+    {
+        initApp();
+    }
+    else {
+        document.addEventListener("DOMContentLoaded", initApp);
+    }
+
+    return {
+        title: "Song-Klatte",
+        addNavItem: appContext.navigation.addItem,
+        addInitializer: (action) => {
+            appContext.readyActions.push(action);
+            if (appContext.isInitialized) {
+                action();
+            }
+        },
+        utils: {
+            removeChildElements: (parentElement) => {
+                while (parentElement.firstChild) {
+                    parentElement.removeChild(parentElement.lastChild);
+                }
+            }
+        }
+    };
+})();
+
+
 var songs = (function() {
-    var c = {},
-        f_create_song,
+    var f_create_song,
         f_create_rhythm,
         f_create_preview;
 
@@ -249,9 +330,87 @@ var songs = (function() {
     };
 
     f_create_preview = function(songScript) {
-        const expressions = {
-            no_linebreak: /^\n/,
-            simple_sequence: /\w\s/
+        const f_createBarContent = function(barData) {
+            var barContentElement, barsLineContentElement;
+            
+            barContentElement = document.createElement('div');
+            barContentElement.classList.add('bar-content');
+
+            barsLineContentElement = document.createElement('div');
+            barsLineContentElement.classList.add('barsline');
+            barContentElement.appendChild(barsLineContentElement);
+
+            if (typeof barData === 'string') {
+                if (barData === 'Ref') {
+                    barsLineContentElement.classList.add('refrain');
+                }
+                barsLineContentElement.appendChild(document.createTextNode(barData));
+            }
+            else {
+                chords = document.createElement('div');
+                chords.classList.add('chords');
+                if (barData.chords) {
+
+                    if (typeof barData.chords === 'string') {
+                        chords.appendChild(document.createTextNode(barData.chords));
+                    }
+                    else {
+                        var chord, chordIdx, chordElem;
+                        for (chordIdx = 0; chordIdx < barData.chords.length; ++chordIdx) {
+                            chordElem = document.createElement('div');
+                            chordElem.classList.add('chord');
+                            chordElem.innerHTML = barData.chords[chordIdx];
+
+                            chords.appendChild(chordElem);
+                        }
+                    }
+                }
+                barsLineContentElement.appendChild(chords);
+
+                lyrics = document.createElement('span');
+                lyrics.classList.add('lyrics');
+                if (barData.lyrics) {
+                    lyrics.appendChild(document.createTextNode(barData.lyrics));
+                }
+                barContentElement.appendChild(lyrics);
+            }
+
+            return barContentElement;
+        };
+        const f_createBarElement = function(barData) {
+            var barElement, barContent;
+
+            barElement = document.createElement('div');
+            barElement.classList.add('bar');
+            
+            if (!barData) {
+                barElement.classList.add('empty')
+            }
+            else {      
+                if (barData.type === 'empty') {
+                    barElement.classList.add('empty');
+                }
+                barContent = f_createBarContent(barData);
+                
+                barElement.appendChild(barContent);
+            }
+            
+            return barElement;
+        };
+        const f_createSequence = function() {
+            const sequenceContainer = document.createElement('div');
+            sequenceContainer.classList.add('sequence-container');
+            
+            const sequenceElement = document.createElement('div');
+            sequenceElement.classList.add('sequence');
+
+            sequenceContainer.appendChild(sequenceElement);
+
+            sequenceContainer.addMeasure = function(measure) {
+                sequenceElement.appendChild(measure);
+            };
+
+            return sequenceContainer;
         };
 
         const parseSong = function(songScript) {
@@ -265,24 +424,38 @@ var songs = (function() {
              *  - JSON
              *    -> TBC
              */
-            const structure = [];
+            var structure;
             if (songScript.includes("\n")) {
-                structure.push(songScript.split("\n"))
+                structure = songScript.split("\n");
             }
             else {
                 // Simple sequence.
-                structure.push(songScript.split(/\s/));
+                structure = songScript.split(/\s/);
             }
 
             return structure;
         };
+        const createSongElements = function(songData) {
+            const songElement = document.createElement('div');
+            songElement.classList.add('song');
+            
+            const sequence = f_createSequence();
 
-        var songElement = document.createElement('div');
-        songElement.classList.add('song');
+            for (let i = 0; i<songData.length; ++i) {
+                sequence.addMeasure(f_createBarElement(songData[i]));
+            }
+            
+            songElement.appendChild(sequence);
+            // songElement.innerHTML = songScript;
 
-        songElement.innerHTML = songScript;
+            return songElement;
+        };
 
-        console.log(parseSong(songScript));
+        const songStructure = parseSong(songScript);
+        console.log("SongData", songStructure);
+        
+        const songElement = createSongElements(songStructure);
+        
         return songElement;
     };
 
@@ -294,61 +467,6 @@ var songs = (function() {
 
 })();
 
-var night_nurse = {
-    "id": "night-nurse",
-    "parentId": "night-nurse-container",
-    "title": "Night Nurse",
-    "infos": ["Gregory Isaacs - Night Nurse", "https://www.youtube.com/watch?v=k7A6Ugs0NFw"],
-    "parts": [
-        {
-            "id": "basic-form",
-            "name": "Grundform",
-            "repeat": true,
-            "bars": ["a", "G", "a", "G"]
-        }
-    ],
-    "structure": {
-        "parts" : [
-            {
-                "id": "intro",
-                "bars": ["Intro"]
-            },
-            {
-                "id": "verse1",
-                "bars": ["Str", "Str", "Str"]
-            },
-            {
-                "id": "chorus1",
-                "bars": ["Ref", "Ref"]
-            },
-            {
-                "id": "verse2",
-                "bars": ["Str", "Str"]
-            },
-            {
-                "id": "chorus2",
-                "bars": ["Ref", "Ref"]
-            },
-            {
-                "id": "instr1",
-                "bars": ["Instr"]
-            },
-            {
-                "id": "verse3",
-                "bars": ["Str", "Str"]
-            },
-            {
-                "id": "chorus3",
-                "bars": ["Ref", "Ref"]
-            },
-            {
-                "id": "outro",
-                "bars": ["Outro", "Outro", "Ref/Fadeout"]
-            }
-        ]
-    }
-};
-
 var test_songs = [
     {
         "title": "one_line_simple",
@@ -356,54 +474,55 @@ var test_songs = [
     },
     {
         "title": "multi_line_simple",
-        "script": "Intro Ref\nStr1 Ref Str2 Ref\nSolo Ref Ref Ende",
-    }
+        "script": "Intro Ref\nStr1 Ref\nStr2 Ref\nSolo Ref Ref\nEnde",
+    },
+    {
+        "title": "whats commin next",
+        "script":  `Intro
+                    Instr.
+                    Str. 1
+                    Pre-Chorus
+                    Refrain
+                    Instr.
+                    Str. 2
+                    Pre-Chorus
+                    Refrain
+                    Solo
+                    Solo
+                    Pre-Chorus
+                    Hits 2 3 1 5
+                    Refrain
+                    Refrain
+                    Ende`
+    },
 ];
 
-// Handler when the DOM is fully loaded.
-var initPage = function() {
+/*
+ * Custom app functionality.
+ * 
+ * Parse and render a songscript text input.
+ * 
+ */
+app.addInitializer(function() {
+    // The song input.
     const songInputElement = document.getElementById("song-script");
+    const previewParent = document.getElementById("song-preview-output");
 
-    var removeElements = function(parentElement) {
-        while (parentElement.firstChild) {
-            parentElement.removeChild(parentElement.lastChild);
-        }
-    };
-    var reloadSongPreview = function() {
-        var inputText = songInputElement.value;
-
-        var preview = songs.createPreview(inputText);
-
-        var previewParent = document.getElementById("song-preview-output");
-        removeElements(previewParent);
+    // (Re)load the preview when button is clicked.
+    document.getElementById("btn-reload-song-preview").addEventListener('click', () => {
+        app.utils.removeChildElements(previewParent);
+        
+        var preview = songs.createPreview(songInputElement.value);
         previewParent.appendChild(preview);
-    };
+    });
 
-    /* Page Header */
-    const pageHeader = document.getElementById("cnt-page-header");
+    // Navigation action to load a songscript to the input.
     const navLoadSong = function(songScript) {
         songInputElement.value = songScript;
     };
-    const createNavItem = function(item) {
-        var navButton = document.createElement("button");
-        navButton.textContent = item.title;
-        navButton.addEventListener("click", () => navLoadSong(item.script));
 
-        pageHeader.appendChild(navButton);
-    };
-    test_songs.forEach(createNavItem);
-
-    document.getElementById("btn-reload-song-preview").addEventListener('click', reloadSongPreview);
-
-    // document.getElementById("rhythm-container").appendChild(songs.createRhythm("x - x x-xx"));
-    // songs.createSong(night_nurse);
-};
-
-if (document.readyState === "complete" ||
-  (document.readyState !== "loading" && !document.documentElement.doScroll))
-{
-    initPage();
-}
-else {
-    document.addEventListener("DOMContentLoaded", initPage);
-}
+    // Create a navigation entry for every test song.
+    test_songs.forEach(song => {
+        app.addNavItem(song.title, () => navLoadSong(song.script));
+    });
+});

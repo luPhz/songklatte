@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
   <title>Songs</title>
 
   <link rel="stylesheet" href="assets/css/styles.css">
@@ -12,24 +12,25 @@
 
     <header>
       <div id="cnt-page-header" class="layout-container">
-        Song-Klatte
+        <h1>Song-Klatte v0.1.0</h1>
       </div>
     </header>
 
     <main>
       <div id="cnt-song-preview" class="layout-container">
-        <h1>Preview</h1>
-        <button id="btn-reload-song-preview">Preview aktualisieren</button>
         <div id="song-preview-output"></div>
       </div>
 
       <div id="song-input" class="layout-container">
-        <h1>Input</h1>
-        <textarea id="song-script">Intro Ref Str1 Ref Str2 Ref Solo Ref Ref Ende</textarea>
+        <h1>Songscript :)</h1>
+        <button id="btn-reload-song-preview">Preview aktualisieren</button><br>
+        <input id="song-name" type="text" value="The Next Hit!"><br>
+        <textarea id="song-script" rows="100" cols="80">Intro Strophe1 Refrain Strophe2 Refrain Refrain Schluss</textarea>
       </div>
     </main>
-
-  <script src="assets/js/songs.js"></script>
+  
+    <script src="assets/ts/demo_songdata.js"></script>
+  <script src="assets/ts/songs.js"></script>
 </body>
 
 </html>

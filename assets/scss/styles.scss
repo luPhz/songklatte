@@ -9,11 +9,6 @@
   font-family: 'Annie Use Your Telescope', sans-serif;
   font-size: 1.2rem;
 
-  .parts {
-    .sequence-container {
-      padding-bottom: 3em;
-    }
-  }
   .song-title {
      display: inline-block;
      margin-right: 2em;
@@ -25,15 +20,21 @@
     // margin-top: 0em;
   }
 
-  .sequence {
-    font-size: 1.5em;
-    .lyrics {
-      font-size: 0.7em;
+  .sequence-container h3 {
+    margin-bottom: 0.1em;
+  
+    .sequence {
+      font-size: 1.5em;
+  
+      .lyrics {
+        font-size: 0.7em;
+      }
+  
+      .refrain {
+        font-weight: 900;
+      }
     }
-  }
-
-  .refrain {
-    font-weight: 900;
+  
   }
 }
 
@@ -243,4 +244,8 @@
       }
     }
   }
+}
+
+textarea, input {
+  width: 100%;
 }

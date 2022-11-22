@@ -8,7 +8,7 @@ $verylarge_minWidth: 1600px;
 $mobile_layout: (
   header_paddings: 0.2rem 1rem,
   header_distance: 5rem,
-  content_paddings: 2rem 1rem,
+  content_paddings: 0rem 1rem,
 );
 $tablet_layout: (
   header_paddings: 0.2rem 1rem,
@@ -69,10 +69,21 @@ header {
 
     .layout-container {
         @include media_support(padding, header_paddings);
+
+        display: flex;
     }
 
     h1 {
+        font-size: 1.2em;
         margin: 0;
+    }
+
+    nav {
+      display: flex;
+      button {
+        margin: 0 0.5em;
+        border: none;
+      }
     }
     
 }

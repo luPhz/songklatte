@@ -3,6 +3,7 @@ $color_gray: #808080;
 
 $color_header_bg: teal;
 $color_header_text: white;
+$color_header_nav: darkorange;
 
 $color_main_bg: white;
 $color_main_text: $color_dark;
@@ -22,6 +23,11 @@ $color_acc_dark_transparent: rgba(15, 118, 153, 0.3);
 header {
   background-color: $color_header_bg;
   color: $color_header_text;
+
+  button {
+    color: $color_header_text;
+    background-color: $color_header_nav;
+  }
 }
 
 

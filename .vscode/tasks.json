@@ -5,13 +5,13 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "Sass Compile",
-            "type": "shell",
-            "command": "node-sass assets/scss/songs.scss assets/css/styles.css",
-            "group": "build",
-            "problemMatcher": [
-                "$node-sass"
-            ]
+            "type": "typescript",
+            "tsconfig": "tsconfig.json",
+            "problemMatcher": ["$tsc"],
+            "group": {
+              "kind": "build",
+              "isDefault": true
+            }
         }
     ]
   }

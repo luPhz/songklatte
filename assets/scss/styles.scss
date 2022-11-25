@@ -1,9 +1,25 @@
 @import '../fonts/fonts';
 
-
 @import 'layout';
 
 @import 'colors';
+
+/* margin + border + padding = 1em */
+@mixin show_bars($leftOrRight) {
+  margin-#{$leftOrRight}: 0.45em;
+  border-#{$leftOrRight}: 0.1em solid $color_dark_text;
+  padding-#{$leftOrRight}: 0.45em;
+};
+@mixin show_double_bars($leftOrRight) {
+  margin-#{$leftOrRight}: 0.4em;
+  border-#{$leftOrRight}: 0.2em double $color_dark_text;
+  padding-#{$leftOrRight}: 0.4em;
+};
+@mixin hide_bars($leftOrRight) {
+  margin-#{$leftOrRight}: 0em;
+  border-#{$leftOrRight}: 0em;
+  padding-#{$leftOrRight}: 1em;
+};
 
 .song {
   font-family: 'Annie Use Your Telescope', sans-serif;
@@ -20,54 +36,30 @@
     // margin-top: 0em;
   }
 
-  .sequence-container h3 {
+  .sequence-container {
     margin-bottom: 0.1em;
   
+    h3, button {
+      display: inline-block;
+    }
+
+    button {
+      font-family: "Audiowide";
+      padding: 0.4em;
+      margin: 0 0.5em;
+      border: none;
+      border-radius: 0.2em;
+      font-weight: bold;
+    }
     .sequence {
       font-size: 1.5em;
   
       .lyrics {
         font-size: 0.7em;
       }
-  
-      .refrain {
-        font-weight: 900;
-      }
     }
-  
   }
 }
-
-
-
-// .sequence {
-//     // padding: 0.2em 0em;
-
-//     .infos {
-//       font-size: 0.5em;
-//     }
-
-//     .lyrics {
-//       font-size: 0.5em;
-//     }
-// }
-
-@mixin show_bars($leftOrRight) {
-    margin-#{$leftOrRight}: 0.45em;
-    border-#{$leftOrRight}: 0.1em solid $color_dark;
-    padding-#{$leftOrRight}: 0.45em;
-};
-@mixin show_double_bars($leftOrRight) {
-  margin-#{$leftOrRight}: 0.4em;
-  border-#{$leftOrRight}: 0.2em double $color_dark;
-  padding-#{$leftOrRight}: 0.4em;
-};
-@mixin hide_bars($leftOrRight) {
-  margin-#{$leftOrRight}: 0em;
-  border-#{$leftOrRight}: 0em;
-  padding-#{$leftOrRight}: 1em;
-};
-
 
 .sequence {
     display: grid;
@@ -75,34 +67,38 @@
     grid-template-columns: 1fr 1fr;
     padding: 0.5em 1em;
     column-gap: 1em;
-    row-gap: 1em;
+    row-gap: 3em;
 
+    &-short {
+      row-gap: 1em;
+    }
 
-    .barsline {
+    .beats-container {
+
       position: relative;
       width: 100%;
       padding: 0 1em;
       left: -1em;
 
-      // show bar at beginning of a bar 
+      // show bar at beginning of a measure 
       @include show_bars(left);
 
       height: 2em;
       line-height: 2em;
     }
 
-    .bar:nth-child(2n) .barsline {
+    .measure-container:nth-child(2n) .beats-container {
       // show bars at end of line and sequence
       @include show_bars(right);
     }
 
-    @media only screen and (min-width: $desktop_minWidth) {
+    @media only screen and (min-width: $tablet_minWidth) {
         grid-template-columns: 1fr 1fr 1fr 1fr;
 
-        .bar:nth-child(2n) .barsline {
+        .measure-container:nth-child(2n) .beats-container {
           @include hide_bars(right);
         }
-        .bar:nth-child(4n) .barsline {
+        .measure-container:nth-child(4n) .beats-container {
           // show bars at end of line and sequence
           @include show_bars(right);
         }
@@ -110,21 +106,21 @@
         &.len5 {
           grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
 
-          .bar:nth-child(4n) .barsline {
+          .measure-container:nth-child(4n) .beats-container {
             @include hide_bars(right);
           }
-          .bar:nth-child(5n) .barsline {
+          .measure-container:nth-child(5n) .beats-container {
             // show bars at end of line and sequence
             @include show_bars(right);
           }
         }
     }
-    .bar:last-child .barsline {
+    .measure-container:last-child .beats-container {
       // show bars at end of line and sequence
       @include show_bars(right);
     }
     &, &.len5 {
-      .bar.start-repeat .barsline {
+      .measure-container.start-repeat .beats-container {
         @include show_double_bars(left);
 
         &::before {
@@ -134,7 +130,7 @@
           top: 0em;
         }
       }
-      .bar.stop-repeat .barsline {
+      .measure-container.stop-repeat .beats-container {
         @include show_double_bars(right);
         
         &::after {
@@ -145,18 +141,26 @@
         }
       }
 
-      .bar.empty .barsline {
+      .measure-container.empty .beats-container {
         @include hide_bars(left);
         @include hide_bars(right);
       }
     }
+
+    .top-text {
+      position: absolute;
+      top: -0.8em;
+      left: -0.2em;
+      font-size: 1.5em;
+      font-weight: bold;
+    }
 }
 
 
-.chords {
+.beats {
   display: flex;
 
-  .chord {
+  .beat {
     flex-grow: 1;
   }
 }
@@ -175,10 +179,10 @@
 
     font-size: 1rem;
     
-    .bar:nth-child(2n) .barsline {
+    .measure-container:nth-child(2n) .beats-container {
       @include hide_bars(right);
     }
-    .bar:nth-child(4n) .barsline {
+    .measure-container:nth-child(4n) .beats-container {
       // show bars at end of line and sequence
       @include show_bars(right);
     }
@@ -186,21 +190,21 @@
     &.len5 {
       grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
 
-      .bar:nth-child(4n) .barsline {
+      .measure-container:nth-child(4n) .beats-container {
         @include hide_bars(right);
       }
-      .bar:nth-child(5n) .barsline {
+      .measure-container:nth-child(5n) .beats-container {
         // show bars at end of line and sequence
         @include show_bars(right);
       }
     }
 
 
-    .bar:last-child .barsline {
+    .measure-container:last-child .beats-container {
       // show bars at end of line and sequence
       @include show_bars(right);
     }
-    .bar.start-repeat .barsline {
+    .measure-container.start-repeat .beats-container {
       @include show_double_bars(left);
 
       &::before {
@@ -209,7 +213,7 @@
         left: 0em;
       }
     }
-    .bar.stop-repeat .barsline {
+    .measure-container.stop-repeat .beats-container {
       @include show_double_bars(right);
       
       &::after {
@@ -221,28 +225,6 @@
   }
   .song .song-infos {
     font-size: 0.8em;
-  }
-}
-
-.rhythm-container {
-  .rhythm {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
-
-    .beat {
-      display: grid;
-
-      grid-template-columns: 1fr 1fr 1fr 1fr;
-
-      
-      .subdivision {
-        border-left: 0.1em solid $color_dark;
-        
-        &.pause {
-          border-left: none;
-        }
-      }
-    }
   }
 }
 

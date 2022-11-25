@@ -1,33 +1,33 @@
 
 $min_width: 300px;
-$tablet_minWidth: 600px;
+$tablet_minWidth: 700px;
 $desktop_minWidth: 1000px;
 $large_minWidth: 1200px;
 $verylarge_minWidth: 1600px;
 
 $mobile_layout: (
   header_paddings: 0.2rem 1rem,
-  header_distance: 5rem,
+  header_distance: 1rem,
   content_paddings: 0rem 1rem,
 );
 $tablet_layout: (
   header_paddings: 0.2rem 1rem,
-  header_distance: 5rem,
+  header_distance: 1rem,
   content_paddings: 2rem 2rem
 );
 $desktop_layout: (
   header_paddings: 0.5rem 3rem,
-  header_distance: 7rem,
+  header_distance: 1rem,
   content_paddings: 2rem 10rem
 );
 $large_layout: (
   header_paddings: 0.5rem 6rem,
-  header_distance: 7rem,
+  header_distance: 1rem,
   content_paddings: 2rem 20vw
 );
 $verylarge_layout: (
   header_paddings: 0.5rem 6rem,
-  header_distance: 7rem,
+  header_distance: 1rem,
   content_paddings: 2rem 25vw
 );
 

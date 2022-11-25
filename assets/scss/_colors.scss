@@ -1,20 +1,24 @@
-$color_dark: #181818;
+$color_main: #0E5E6F;
+$color_main_light: #3A8891;
+$color_bg: #FFEFD6;
+$color_bg2: #f9e7c8;
+$color_bg_accent: #d4c4ab;
+$color_main: #0E5E6F;
+
+$color_dark_text: #000e3b;
+$color_light_text: #0023a1;
 $color_gray: #808080;
 
-$color_header_bg: teal;
-$color_header_text: white;
-$color_header_nav: darkorange;
+$color_header_bg: $color_main;
+$color_header_text: $color_bg;
+$color_header_nav: $color_main_light;
 
-$color_main_bg: white;
-$color_main_text: $color_dark;
+$color_main_bg: $color_bg;
+$color_main_text: $color_dark_text;
 
-$color_footer_bg: $color_dark;
-$color_footer_text: white;
+$color_footer_bg: $color_dark_text;
+$color_footer_text: $color_bg;
 
-
-$color_accent: #149dcc;
-$color_accent_dark: #0f7699;
-$color_acc_dark_transparent: rgba(15, 118, 153, 0.3);
 
 /*
  * Colors only ...
@@ -34,9 +38,27 @@ header {
 main {
   background-color: $color_main_bg;
   color: $color_main_text;
+
+  button {
+    color: $color_bg;
+    background-color: $color_main_light;
+  }
 }
 
 footer {
   background-color: $color_footer_bg;
   color: $color_footer_text;
+}
+
+.beats-container {
+  .default & {
+    background-color: $color_bg;
+  }
+  .alt & {
+    background-color: $color_bg2;
+  }
+
+  .top-text {
+    color: $color_bg_accent;
+  }
 }

@@ -1,4 +1,4 @@
 build
 dist
-assets/ts/*.js
+*.js
 assets/css

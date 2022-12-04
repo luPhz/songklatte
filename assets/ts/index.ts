@@ -11,15 +11,18 @@ app.addInitializer(() => {
     const previewParent = document.getElementById("song-preview-output") as HTMLElement;
     const reloadButton  = document.getElementById("btn-reload-song-preview") as HTMLElement;
 
-    const updateSongElements = function(song: Song) {  
-        const parser = new SongScriptParser();
+    let lyrics: string;
 
+    const updateSongElements = function(song: SongData) {
         if (!song.data) {
-            song.data = parser.parseSongScript(song.script);
+            song.data = SongParser.parseSongScript(song.script);
+        }
+        if (song.lyrics) {
+            song.addLyrics(SongData.parseLyricScript(song.lyrics));
         }
         console.log("Song", song);
         
-        const songElement = SongElements.createSongSequence(song);
+        const songElement = SongComponent.create(song);
         
         return songElement;
     };
@@ -27,25 +30,27 @@ app.addInitializer(() => {
     /* Create and update preview */
     const update = function() {
         removeChildElements(previewParent);
-        var previewElements = updateSongElements({
+        var previewElements = updateSongElements(SongData.create({
             title: songTitleInputElement.value,
-            script: songScriptInputElement.value
-        });
+            script: songScriptInputElement.value,
+            lyrics: lyrics
+        }));
         previewParent.appendChild(previewElements);
     }
     /* (Re)load the preview when button is clicked */
     reloadButton.addEventListener('click', update);
 
     // Navigation action to load a songscript to the input.
-    const navLoadSong = function(song: Song) {
+    const navLoadSong = function(song: SongData) {
         songTitleInputElement.value = song.title;
         songScriptInputElement.value = song.script;
+        lyrics = song.lyrics || '';
         update();
     };
 
     /* Create a navigation entry for every test song. */
     demo_songdata.forEach(song => {
-        app.addNavItem(song.title, () => navLoadSong(song));
+        app.addNavItem(song.title, () => navLoadSong(SongData.create(song)));
     });
 
     /* Preview test song */
@@ -55,8 +60,7 @@ app.addInitializer(() => {
 /*
  * App startup.
  */
-if (document.readyState === "complete")
-{
+if (document.readyState === "complete") {
     app.init();
 }
 else {
